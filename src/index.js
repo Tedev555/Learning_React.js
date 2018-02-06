@@ -2,24 +2,41 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 
-//Define component with Function 
-function Welcome(props) {
+// Clock is now defined as a class rather than a function.
+// This lets us use additional features such as local state and lifecycle hooks.
+class Clock extends React.Component {
 
-    return <h1>Hello, {props.name}</h1>
+    //Class components should always call the base constructor with props.
+    constructor(props) {
+        super(props)
+        this.state = {date: new Date()} // The only place where you can assign this.state is the constructor.
+    }
+
+    //The componentDidMount() hook runs after the component output has been rendered to the DOM
+    componentDidMount() {
+        this.timerID = setInterval(
+            () => this.tick(), 1000
+        )        
+    }
+
+    componentWillUnmount() {
+        clearInterval(this.timerID)
+    }
+
+    tick() {
+        this.setState({
+            date: new Date()
+        })
+    }
+
+    render() {
+        return (
+            <div>
+                <h1>State and Lifecycle</h1>
+                <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+            </div>
+        )
+    }
 }
 
-//Components can refer to other components in their output.
-//Components can reuseable
-function App() {
-
-    return(
-        <div>
-            <Welcome name="Ted"/>
-            <Welcome name="Kanya"/>
-            <Welcome name="Khamphet"/>
-        </div>
-    )
-}
-const element = <App />
-
- ReactDOM.render(element, document.getElementById('root'));
+ ReactDOM.render(<Clock />, document.getElementById('root'));
